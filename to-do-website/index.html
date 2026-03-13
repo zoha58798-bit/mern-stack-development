@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organizo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-6xl w-full grid md:grid-cols-2 gap-10 items-center p-10">
+        <!-- Left Illustration -->
+        <div class="bg-gray-200 rounded-3xl flex items-center justify-center p-10">
+            <img src="image1.png" alt="todo illustration" class="w-96">
+        </div>
+        <!-- Right Login Section -->
+        <div class="flex flex-col items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-6">
+                <div class="bg-yellow-400 w-12 h-12 rounded-full flex items-center justify-center font-bold">A Z</div>
+                <h1 class="text-4xl font-semibold">Organizo</h1>
+            </div>
+            <!-- Login Card -->
+            <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+                <label class="text-gray-600 text-sm">Email</label>
+                <input type="email" placeholder="Your email" class="w-full mt-1 mb-4 p-3 bg-gray-100 rounded-lg outline-none"/>
+                <label class="text-gray-600 text-sm">Password</label>
+                <input type="password" placeholder="Your password" class="w-full mt-1 mb-6 p-3 bg-gray-100 rounded-lg outline-none"/>
+                <button id="continueBtn" class="w-full bg-yellow-400 hover:bg-yellow-500 p-3 rounded-full font-medium flex items-center justify-center gap-2">
+                    Continue →
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script src="script.js"></script>
+</body>
+</html>

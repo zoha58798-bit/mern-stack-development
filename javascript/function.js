@@ -1,4 +1,4 @@
-/*//FUNCTIONS
+//FUNCTIONS
 
 // simple function
 function add(a,b) {
@@ -372,7 +372,7 @@ console.log(doubled)
 
 let arr3 = [10, 15, 20, 25, 30]
 let smallNumbers= arr3.filter(n => n<20)
-console.log(smallNumbers)*/
+console.log(smallNumbers)
 
 // CLOSURE
 
@@ -399,5 +399,3 @@ function counter() {
 let myCounter = counter()
 myCounter()
 myCounter()
-
-//1

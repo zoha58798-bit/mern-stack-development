@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To Do App</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+
+<div class="bg-white p-6 rounded-lg shadow-lg w-96">
+
+<h1 class="text-2xl font-bold text-center mb-4">To Do App</h1>
+
+<div class="flex gap-2">
+<input id="taskInput" type="text" placeholder="Enter task"
+class="border p-2 flex-1 rounded">
+
+<button onclick="addTask()" class="bg-blue-500 text-white px-4 rounded">
+Add
+</button>
+</div>
+
+<ul id="taskList" class="mt-4 space-y-2"></ul>
+
+</div>
+
+<script>
+
+function addTask(){
+
+let input = document.getElementById("taskInput")
+let task = input.value
+
+if(task === "") return
+
+let li = document.createElement("li")
+
+li.className = "flex justify-between bg-gray-200 p-2 rounded"
+
+li.innerHTML = `
+<span>${task}</span>
+
+<div class="space-x-2">
+<button onclick="completeTask(this)" class="text-green-600">✔</button>
+<button onclick="deleteTask(this)" class="text-red-600">✖</button>
+</div>
+`
+
+document.getElementById("taskList").appendChild(li)
+
+input.value = ""
+
+}
+
+function deleteTask(btn){
+btn.parentElement.parentElement.remove()
+}
+
+function completeTask(btn){
+
+let text = btn.parentElement.previousElementSibling
+
+text.classList.toggle("line-through")
+text.classList.toggle("text-gray-500")
+
+}
+
+</script>
+
+</body>
+</html>

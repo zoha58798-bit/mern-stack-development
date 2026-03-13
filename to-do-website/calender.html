@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To Do</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+
+<div class="flex h-screen">
+    <div id="sidebar">
+        <div class="flex-1 p-10">
+            <h1 class="text-3xl font-bold">Today</h1>
+        </div>
+    </div>
+    <div class="flex gap-3 mb-6">
+        <button onclick="goDay()" 
+        class="bg-gray-200 px-4 py-1 rounded">
+        Day
+        </button>
+
+        <button onclick="goWeek()" 
+        class="bg-gray-200 px-4 py-1 rounded">
+        Week
+        </button>
+
+        <button onclick="goMonth()" 
+        class="bg-gray-200 px-4 py-1 rounded">
+        Month
+        </button>
+    </div>
+</div>
+
+<script src="sidebar.js"></script>
+<script src="calender.js"></script>
+
+</body>
+</html>
