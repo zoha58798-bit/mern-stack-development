@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow - Smart To-Do App</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { fontFamily: { sans: ['Inter','sans-serif'] } } }
+    }
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    .gradient-text{background:linear-gradient(135deg,#7c3aed,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-bg{background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(124,58,237,.15) 0%,transparent 70%)}
+    .card-hover{transition:all .3s ease}
+    .card-hover:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(124,58,237,.15)}
+    .btn-glow{box-shadow:0 0 30px rgba(124,58,237,.4)}
+    .btn-glow:hover{box-shadow:0 0 50px rgba(124,58,237,.6);transform:scale(1.05)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    .animate-fade-up{animation:fadeUp .7s ease forwards}
+    .animate-float{animation:float 3s ease-in-out infinite}
+    .reveal{opacity:0;transform:translateY(30px);transition:all .7s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+  </style>
+</head>
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white font-sans transition-colors duration-300">
+<script>
+if(localStorage.getItem("taskflow-theme") === "dark"){
+  document.documentElement.classList.add("dark");
+}
+</script>
+
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-100 dark:border-gray-800">
+  <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-pink-500 flex items-center justify-center shadow-lg">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      </div>
+      <span class="font-bold text-xl">TaskFlow</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="toggleDark()" class="w-9 h-9 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+        <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      </button>
+      <a href="dashboard.html" class="px-5 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold text-sm transition-all shadow-lg shadow-violet-600/30">Start Planning</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero-bg pt-28 pb-20 px-4 min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+  <div class="absolute top-20 left-10 w-72 h-72 rounded-full bg-violet-300/20 dark:bg-violet-600/10 blur-3xl animate-float"></div>
+  <div class="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-pink-300/20 dark:bg-pink-600/10 blur-3xl animate-float" style="animation-delay:1.5s"></div>
+
+  <div class="text-center max-w-4xl mx-auto relative z-10">
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 text-sm font-medium mb-8">
+      ✨ Your ultimate productivity companion
+    </div>
+    <h1 class="text-5xl sm:text-6xl md:text-7xl font-black leading-tight mb-6 animate-fade-up">
+      Organize your work,<br/>
+      <span class="gradient-text">master your life.</span>
+    </h1>
+    <p class="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-10 animate-fade-up" style="animation-delay:.2s">
+      TaskFlow brings your tasks, calendar, and notes together in one beautiful space. Plan your days, track your progress, and get things done.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up" style="animation-delay:.4s">
+      <a href="dashboard.html" class="btn-glow inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-pink-500 text-white font-bold text-lg shadow-xl transition-all">
+        🚀 Start Planning Free
+      </a>
+      <a href="#features" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 font-bold text-lg hover:border-violet-400 dark:hover:border-violet-500 hover:text-violet-600 dark:hover:text-violet-400 transition-all">
+        See Features ↓
+      </a>
+    </div>
+  </div>
+
+  <div class="mt-16 grid grid-cols-3 gap-4 sm:gap-8 max-w-lg mx-auto animate-fade-up" style="animation-delay:.6s">
+    <div class="text-center p-4 rounded-2xl bg-white/70 dark:bg-gray-800/70 backdrop-blur border border-gray-100 dark:border-gray-700 shadow-lg">
+      <div class="text-3xl font-black gradient-text">100%</div>
+      <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Free</div>
+    </div>
+    <div class="text-center p-4 rounded-2xl bg-white/70 dark:bg-gray-800/70 backdrop-blur border border-gray-100 dark:border-gray-700 shadow-lg">
+      <div class="text-3xl font-black gradient-text">6</div>
+      <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Pages</div>
+    </div>
+    <div class="text-center p-4 rounded-2xl bg-white/70 dark:bg-gray-800/70 backdrop-blur border border-gray-100 dark:border-gray-700 shadow-lg">
+      <div class="text-3xl font-black gradient-text">∞</div>
+      <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tasks</div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="py-24 px-4 bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <h2 class="text-4xl sm:text-5xl font-black mb-4">Everything you need to <span class="gradient-text">stay productive</span></h2>
+      <p class="text-lg text-gray-500 dark:text-gray-400">Powerful features designed to help you achieve more, every single day.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="card-hover bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm reveal">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center mb-6 shadow-lg text-2xl">📋</div>
+        <h3 class="text-xl font-bold mb-2">Smart Dashboard</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Today's tasks, upcoming deadlines, and progress bar — all in one place.</p>
+      </div>
+      <div class="card-hover bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm reveal">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center mb-6 shadow-lg text-2xl">📅</div>
+        <h3 class="text-xl font-bold mb-2">Calendar View</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Monthly calendar with colored dots on dates that have tasks.</p>
+      </div>
+      <div class="card-hover bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm reveal">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center mb-6 shadow-lg text-2xl">✅</div>
+        <h3 class="text-xl font-bold mb-2">Task Manager</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Add, edit, delete tasks with priorities, categories, due dates & drag-drop.</p>
+      </div>
+      <div class="card-hover bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm reveal">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center mb-6 shadow-lg text-2xl">📝</div>
+        <h3 class="text-xl font-bold mb-2">Sticky Notes Wall</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Quick colorful sticky notes to capture ideas instantly.</p>
+      </div>
+      <div class="card-hover bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm reveal">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center mb-6 shadow-lg text-2xl">📊</div>
+        <h3 class="text-xl font-bold mb-2">Productivity Stats</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Visual charts showing completion rate, streaks, and task breakdown.</p>
+      </div>
+      <div class="card-hover bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm reveal">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center mb-6 shadow-lg text-2xl">🌙</div>
+        <h3 class="text-xl font-bold mb-2">Dark Mode + Offline</h3>
+        <p class="text-gray-500 dark:text-gray-400 text-sm">Beautiful dark mode. All data saved locally — no account needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-24 px-4">
+  <div class="max-w-3xl mx-auto text-center reveal">
+    <h2 class="text-4xl sm:text-5xl font-black mb-6">Ready to be <span class="gradient-text">more productive?</span></h2>
+    <p class="text-lg text-gray-500 dark:text-gray-400 mb-10">Free forever, no account needed. Just open and start planning!</p>
+    <a href="dashboard.html" class="btn-glow inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-gradient-to-r from-violet-600 to-pink-500 text-white font-bold text-xl shadow-2xl transition-all">
+      Start Planning Now 🚀
+    </a>
+  </div>
+</section>
+
+<footer class="border-t border-gray-100 dark:border-gray-800 py-8 px-4 text-center text-gray-400 text-sm">
+  © 2026 TaskFlow · HTML + Tailwind CSS + JavaScript
+</footer>
+
+<script src="index.js"></script>
+</body>
+</html>

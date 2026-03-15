@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sticky Notes – TaskFlow</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    .sidebar-link{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border-radius:.75rem;font-weight:500;font-size:.875rem;transition:all .2s;color:inherit;text-decoration:none}
+    .sidebar-link:hover,.sidebar-link.active{background:rgba(124,58,237,.1);color:#7c3aed}
+    .dark .sidebar-link:hover,.dark .sidebar-link.active{background:rgba(124,58,237,.2);color:#a78bfa}
+    @keyframes pop{from{opacity:0;transform:scale(.85) rotate(-2deg)}to{opacity:1;transform:scale(1) rotate(0deg)}}
+    .note-card{animation:pop .3s ease forwards;transition:transform .2s,box-shadow .2s}
+    .note-card:hover{transform:translateY(-4px) rotate(0.5deg);box-shadow:0 12px 30px rgba(0,0,0,.15)}
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white font-sans min-h-screen transition-colors duration-300">
+
+<script>
+if(localStorage.getItem("taskflow-theme") === "dark"){
+  document.documentElement.classList.add("dark");
+}
+</script>
+
+<div class="flex min-h-screen">
+
+  <aside class="hidden md:flex flex-col w-64 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 fixed inset-y-0 left-0 z-40">
+    <a href="index.html" class="flex items-center gap-2.5 mb-8 p-2">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-pink-500 flex items-center justify-center shadow-lg text-white text-lg">✓</div>
+      <span class="font-bold text-xl">TaskFlow</span>
+    </a>
+    <nav class="flex-1 space-y-1">
+      <a href="dashboard.html" class="sidebar-link">📋 Dashboard</a>
+      <a href="tasks.html" class="sidebar-link">✅ Task Manager</a>
+      <a href="calendar.html" class="sidebar-link">📅 Calendar</a>
+      <a href="notes.html" class="sidebar-link active">📝 Sticky Notes</a>
+      <a href="stats.html" class="sidebar-link">📊 Stats</a>
+    </nav>
+    <button onclick="toggleDark()" class="sidebar-link mt-auto" id="darkBtn">🌙 Dark Mode</button>
+  </aside>
+
+  <main class="flex-1 md:ml-64 pb-24 md:pb-0">
+    <header class="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b border-gray-200 dark:border-gray-800 px-4 md:px-8 h-16 flex items-center justify-between">
+      <h1 class="font-bold text-xl">Sticky Notes Wall 📝</h1>
+      <button onclick="openModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold text-sm transition-all shadow-lg shadow-violet-600/30">+ New Note</button>
+    </header>
+
+    <div class="p-4 md:p-8">
+
+      <div class="flex gap-2 mb-6 flex-wrap">
+        <button onclick="setFilter('')" id="filterAll" class="px-4 py-2 rounded-xl text-sm font-medium border-2 border-violet-400 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 transition-all">All Notes</button>
+        <button onclick="setFilter('yellow')" class="px-4 py-2 rounded-xl text-sm font-medium border-2 border-yellow-300 hover:border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 transition-all">🟡 Yellow</button>
+        <button onclick="setFilter('pink')" class="px-4 py-2 rounded-xl text-sm font-medium border-2 border-pink-300 hover:border-pink-400 bg-pink-50 dark:bg-pink-900/20 text-pink-700 dark:text-pink-300 transition-all">🩷 Pink</button>
+        <button onclick="setFilter('blue')" class="px-4 py-2 rounded-xl text-sm font-medium border-2 border-blue-300 hover:border-blue-400 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 transition-all">🔵 Blue</button>
+        <button onclick="setFilter('green')" class="px-4 py-2 rounded-xl text-sm font-medium border-2 border-green-300 hover:border-green-400 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 transition-all">🟢 Green</button>
+        <button onclick="setFilter('purple')" class="px-4 py-2 rounded-xl text-sm font-medium border-2 border-purple-300 hover:border-purple-400 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 transition-all">🟣 Purple</button>
+      </div>
+
+      <div id="notesGrid" class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4"></div>
+    </div>
+  </main>
+</div>
+
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex">
+  <a href="dashboard.html" class="flex-1 flex flex-col items-center gap-0.5 py-3 text-gray-500 dark:text-gray-400"><span class="text-xl">📋</span><span class="text-[10px] font-medium">Home</span></a>
+  <a href="tasks.html" class="flex-1 flex flex-col items-center gap-0.5 py-3 text-gray-500 dark:text-gray-400"><span class="text-xl">✅</span><span class="text-[10px] font-medium">Tasks</span></a>
+  <a href="calendar.html" class="flex-1 flex flex-col items-center gap-0.5 py-3 text-gray-500 dark:text-gray-400"><span class="text-xl">📅</span><span class="text-[10px] font-medium">Calendar</span></a>
+  <a href="notes.html" class="flex-1 flex flex-col items-center gap-0.5 py-3 text-violet-600 dark:text-violet-400"><span class="text-xl">📝</span><span class="text-[10px] font-medium">Notes</span></a>
+  <a href="stats.html" class="flex-1 flex flex-col items-center gap-0.5 py-3 text-gray-500 dark:text-gray-400"><span class="text-xl">📊</span><span class="text-[10px] font-medium">Stats</span></a>
+</nav>
+
+<div id="noteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onclick="closeOnBack(event)">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 w-full max-w-md shadow-2xl" onclick="event.stopPropagation()">
+    <h2 class="font-bold text-xl mb-5" id="noteModalTitle">New Sticky Note 📝</h2>
+    <input type="hidden" id="noteEditId"/>
+    <div class="space-y-4">
+      <input id="noteTitle" type="text" placeholder="Note title..." class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400 text-sm"/>
+      <textarea id="noteContent" placeholder="Write your note here..." rows="5" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400 text-sm resize-none"></textarea>
+      <div>
+        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Pick a color:</label>
+        <div class="flex gap-3">
+          <button onclick="selectColor('yellow')" data-color="yellow" class="color-opt w-8 h-8 rounded-full bg-yellow-300 border-3 border-transparent hover:scale-110 transition-transform"></button>
+          <button onclick="selectColor('pink')" data-color="pink" class="color-opt w-8 h-8 rounded-full bg-pink-300 border-3 border-transparent hover:scale-110 transition-transform"></button>
+          <button onclick="selectColor('blue')" data-color="blue" class="color-opt w-8 h-8 rounded-full bg-blue-300 border-3 border-transparent hover:scale-110 transition-transform"></button>
+          <button onclick="selectColor('green')" data-color="green" class="color-opt w-8 h-8 rounded-full bg-green-300 border-3 border-transparent hover:scale-110 transition-transform"></button>
+          <button onclick="selectColor('purple')" data-color="purple" class="color-opt w-8 h-8 rounded-full bg-purple-300 border-3 border-transparent hover:scale-110 transition-transform"></button>
+          <button onclick="selectColor('orange')" data-color="orange" class="color-opt w-8 h-8 rounded-full bg-orange-300 border-3 border-transparent hover:scale-110 transition-transform"></button>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeModal()" class="flex-1 py-3 rounded-xl border border-gray-200 dark:border-gray-600 font-semibold text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Cancel</button>
+      <button onclick="saveNote()" class="flex-1 py-3 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold text-sm transition-colors shadow-lg shadow-violet-600/30" id="noteSaveBtn">Add Note</button>
+    </div>
+  </div>
+</div>
+
+<script src="notes.js"></script>
+</body>
+</html>

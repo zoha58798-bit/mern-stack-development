@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calendar – TaskFlow</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    .sidebar-link{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;border-radius:.75rem;font-weight:500;font-size:.875rem;transition:all .2s;color:inherit;text-decoration:none}
+    .sidebar-link:hover,.sidebar-link.active{background:rgba(124,58,237,.1);color:#7c3aed}
+    .dark .sidebar-link:hover,.dark .sidebar-link.active{background:rgba(124,58,237,.2);color:#a78bfa}
+    .cal-day{min-height:80px;cursor:pointer;transition:all .2s}
+    .cal-day:hover{background:rgba(124,58,237,.05)}
+    .dark .cal-day:hover{background:rgba(124,58,237,.1)}
+    @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .slide-up{animation:slideUp .3s ease}
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white font-sans min-h-screen transition-colors duration-300">
+
+<script>
+if(localStorage.getItem("taskflow-theme") === "dark"){
+  document.documentElement.classList.add("dark");
+}
+</script>
+
+<div class="flex min-h-screen">
+  
+  <aside class="hidden md:flex flex-col w-64 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 fixed inset-y-0 left-0 z-40">
+    <a href="index.html" class="flex items-center gap-2.5 mb-8 p-2">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-pink-500 flex items-center justify-center shadow-lg text-white text-lg">✓</div>
+      <span class="font-bold text-xl">TaskFlow</span>
+    </a>
+    <nav class="flex-1 space-y-1">
+      <a href="dashboard.html" class="sidebar-link">📋 Dashboard</a>
+      <a href="tasks.html" class="sidebar-link">✅ Task Manager</a>
+      <a href="calendar.html" class="sidebar-link active">📅 Calendar</a>
+      <a href="notes.html" class="sidebar-link">📝 Sticky Notes</a>
+      <a href="stats.html" class="sidebar-link">📊 Stats</a>
+    </nav>
+    <button onclick="toggleDark()" class="sidebar-link mt-auto" id="darkBtn">🌙 Dark Mode</button>
+  </aside>
+
+  <main class="flex-1 md:ml-64 pb-24 md:pb-0">
+    <header class="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b border-gray-200 dark:border-gray-800 px-4 md:px-8 h-16 flex items-center">
+      <h1 class="font-bold text-xl">Calendar View 📅</h1>
+    </header>
+
+    <div class="p-4 md:p-8 max-w-5xl mx-auto">
+ 
+      <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden mb-6">
+
+        <div class="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700">
+          <button onclick="prevMonth()" class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-bold text-lg">‹</button>
+          <div class="text-center">
+            <h2 id="monthTitle" class="font-bold text-xl"></h2>
+          </div>
+          <button onclick="nextMonth()" class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-bold text-lg">›</button>
+        </div>
+
+        <div class="grid grid-cols-7 border-b border-gray-100 dark:border-gray-700">
+          <div class="p-3 text-center text-xs font-bold text-red-500">Sun</div>
+          <div class="p-3 text-center text-xs font-bold text-gray-500 dark:text-gray-400">Mon</div>
+          <div class="p-3 text-center text-xs font-bold text-gray-500 dark:text-gray-400">Tue</div>
+          <div class="p-3 text-center text-xs font-bold text-gray-500 dark:text-gray-400">Wed</div>
+          <div class="p-3 text-center text-xs font-bold text-gray-500 dark:text-gray-400">Thu</div>
+          <div class="p-3 text-center text-xs font-bold text-gray-500 dark:text-gray-400">Fri</div>
+          <div class="p-3 text-center text-xs font-bold text-blue-500">Sat</div>
+        </div>
+
+        <div id="calGrid" class="grid grid-cols-7"></div>
+      </div>
+
+      <div id="dayPanel" class="hidden bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden slide-up">
+        <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+          <h3 id="dayPanelTitle" class="font-bold text-lg"></h3>
+          <button onclick="document.getElementById('dayPanel').classList.add('hidden')" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 transition-colors">✕</button>
+        </div>
+        <div id="dayTaskList" class="divide-y divide-gray-50 dark:divide-gray-700/50"></div>
+        <div class="p-4 border-t border-gray-100 dark:border-gray-700">
+          <a href="tasks.html" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold text-sm transition-colors">+ Add Task</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex">
+  <a href="dashboard.html" class="flex-1 flex flex-col items-center gap-0.5 py-3 text-gray-500 dark:text-gray-400"><span class="text-xl">📋</span><span class="text-[10px] font-medium">Home</span></a>
+  <a href="tasks.html" class="flex-1 flex flex-col items-center gap-0.5 py-3 text-gray-500 dark:text-gray-400"><span class="text-xl">✅</span><span class="text-[10px] font-medium">Tasks</span></a>
+  <a href="calendar.html" class="flex-1 flex flex-col items-center gap-0.5 py-3 text-violet-600 dark:text-violet-400"><span class="text-xl">📅</span><span class="text-[10px] font-medium">Calendar</span></a>
+  <a href="notes.html" class="flex-1 flex flex-col items-center gap-0.5 py-3 text-gray-500 dark:text-gray-400"><span class="text-xl">📝</span><span class="text-[10px] font-medium">Notes</span></a>
+  <a href="stats.html" class="flex-1 flex flex-col items-center gap-0.5 py-3 text-gray-500 dark:text-gray-400"><span class="text-xl">📊</span><span class="text-[10px] font-medium">Stats</span></a>
+</nav>
+
+<script src="calendar.js"></script>
+</body>
+</html>
