@@ -1,9 +1,6 @@
 import { useState } from "react";
 
-const bagImage =
-  "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&h=300&fit=crop&crop=center";
-
-export default function ProductCard() {
+export default function ProductCard({ image, title, description, price }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
@@ -19,28 +16,31 @@ export default function ProductCard() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="w-72 bg-white rounded-3xl shadow-xl overflow-hidden">
 
+        {/* Product Image */}
         <div className="w-full h-48 overflow-hidden">
           <img
-            src={bagImage}
-            alt="Vintage Leather Bag"
+            src={image}
+            alt={title}
             className="w-full h-full object-cover"
           />
         </div>
 
+        {/* Card Content */}
         <div className="p-5">
 
+          {/* Title */}
           <h2 className="text-lg font-bold text-gray-900 mb-1">
-            Vintage Leather Bag
+            {title}
           </h2>
 
+          {/* Description */}
           <p className="text-sm text-gray-400 mb-4 leading-relaxed">
-            handmade leather totes, women's leather accessories, handbags and
-            purses, work...
+            {description}
           </p>
 
+          {/* Price + Quantity */}
           <div className="flex items-center justify-between mb-5">
-
-            <span className="text-2xl font-bold text-purple-600">299$</span>
+            <span className="text-2xl font-bold text-purple-600">{price}$</span>
 
             <div className="flex items-center gap-3">
               <button
@@ -61,8 +61,8 @@ export default function ProductCard() {
             </div>
           </div>
 
+          {/* Action Buttons */}
           <div className="flex gap-3">
-            {/* Add to Cart */}
             <button
               onClick={handleAddToCart}
               className={`flex-1 py-3 rounded-full border-2 border-purple-600 text-sm font-semibold transition-all duration-200

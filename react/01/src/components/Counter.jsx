@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function Counter() {
   const [count, setCount] = useState(0);
+
+  useEffect ( () => {
+    console.log("Count Ho rha h", count);
+  }, [count])
 
   return (
     <div className='flex items-center justify-center'>

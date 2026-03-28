@@ -1,8 +1,12 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function NameChanger () {
     const [name, setName] = useState("Zoha");
+
+    useEffect(() => {
+    console.log("Run Everytime"); 
+    })
 
     return (
         <div className='flex flex-col items-center justify-center h-screen'>
